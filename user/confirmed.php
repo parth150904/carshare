@@ -26,6 +26,7 @@
       <li><a href="edit.php"><i class="material-icons">edit</i> Edit</a></li>
       <li><a href="add_ride.php"><i class="material-icons">directions_car</i> Add Ride</a></li>
       <li><a class="active" href="confirmed.php"><i class="material-icons">check_circle</i> Confirmed</a></li>
+      <li><a href="support.php"><i class="material-icons">support_agent</i> Support</a></li>
       <li><a href="logout.php"><i class="material-icons">logout</i> Log Out</a></li>
     </ul>
   </nav>
@@ -73,3 +74,4 @@
   <footer class="ds-footer"><p>&copy; <?php echo date('Y'); ?> <a href="../index.php">CarShare</a></p></footer>
 </body>
 </html>
+

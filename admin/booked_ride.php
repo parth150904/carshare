@@ -1,177 +1,93 @@
 <?php
 session_start();
-include'dbconnection.php';
-// checking session is valid for not 
-if (strlen($_SESSION['id']==0)) {
+include 'dbconnection.php';
+if (strlen($_SESSION['id'])==0) {
   header('location:logout.php');
-  } else{
+  exit;
+}
 
-$name = mysqli_query($con,"SELECT name FROM users WHERE id='$_SESSION[id]'");
-$user_name = mysqli_fetch_assoc($name);
-
-// for deleting user
-  if(isset($_GET['id']))
-  {
-  $delid=$_GET['id'];
-  $msg=mysqli_query($con,"delete from ride_book where b_id='$delid'");
-  if($msg)
-  {
-  echo "<script>alert('Data deleted');</script>";
+if(isset($_GET['id'])) {
+  $bookid = intval($_GET['id']);
+  $msg = mysqli_query($con,"DELETE FROM ride_book WHERE b_id='$bookid'");
+  if($msg) {
+    echo "<script>alert('Booking deleted successfully.'); window.location.href='booked_ride.php';</script>";
   }
 }
-
-
-function user_name($id)
-{
-  global $con;
-  $name_q = mysqli_query($con,"SELECT name FROM users WHERE id='$id'");
-  $uname = mysqli_fetch_assoc($name_q);
-
-  echo $uname['name'];
-}
-
-
-
-?><!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="Dashboard">
-    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>All Bookings | Admin</title>
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="../assets/css/dashboard.css" rel="stylesheet">
+</head>
+<body class="ds-body">
+  <nav class="ds-topnav">
+    <a class="ds-brand" href="manage-users.php"><span class="ds-brand-mark"><i></i><i></i><i></i></span><span>car<strong>share</strong> <small style="color:#d9f36b;">ADMIN</small></span></a>
+    <button class="ds-menu-toggle" onclick="document.querySelector('.ds-nav-links').classList.toggle('is-open')" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="ds-nav-links">
+      <li><a href="dashboard.php"><i class="material-icons">dashboard</i> Dashboard</a></li>
+      <li><a href="manage-users.php"><i class="material-icons">people</i> Users</a></li>
+      <li><a href="car_ride.php"><i class="material-icons">directions_car</i> Rides</a></li>
+      <li><a class="active" href="booked_ride.php"><i class="material-icons">book_online</i> Bookings</a></li>
+      <li><a href="manage_reviews.php"><i class="material-icons">star_rate</i> Reviews</a></li>
+      <li><a href="support.php"><i class="material-icons">support_agent</i> Support</a></li>
+      <li><a href="logout.php"><i class="material-icons">logout</i> Log Out</a></li>
+    </ul>
+  </nav>
 
-    <title>Admin | Manage Users</title>
-    <link href="assets/css/bootstrap.css" rel="stylesheet">
-    <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-    <link href="assets/css/style.css" rel="stylesheet">
-    <link href="assets/css/style-responsive.css" rel="stylesheet">
-  </head>
+  <section class="ds-hero" style="background:#173f36; color:white;">
+    <h2>Passenger Bookings</h2>
+    <p class="ds-hero-email" style="color:rgba(255,255,255,0.7);">Monitor all seat bookings and requests</p>
+  </section>
 
-  <body>
-
-  <section id="container" >
-      <header class="header black-bg">
-              <div class="sidebar-toggle-box">
-                  <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
-              </div>
-            <a href="#" class="logo"><b>Admin Dashboard</b></a>
-            <div class="nav notify-row" id="top_menu">
-               
-                         
-                   
-                </ul>
-            </div>
-            <div class="top-menu">
-            	<ul class="nav pull-right top-menu">
-                    <li><a class="logout" href="logout.php">Logout</a></li>
-            	</ul>
-            </div>
-        </header>
-      <aside>
-          <div id="sidebar"  class="nav-collapse ">
-              <ul class="sidebar-menu" id="nav-accordion">
-              
-              	  <p class="centered"><a href="#"><img src="../assets/img/kp.jpg" class="img-circle" width="60"></a></p>
-                  <h5 class="centered"><?php echo $user_name['name'];?></h5>
-                    
-                  <li class="mt">
-                      <a href="change-password.php">
-                          <i class="fa fa-file"></i>
-                          <span>Change Password</span>
-                      </a>
-                  </li>
-
-                  <li class="sub-menu">
-                      <a href="manage-users.php" >
-                          <i class="fa fa-user"></i>
-                          <span>Manage Users</span>
-                      </a>
-                   
-                  </li>
-
-                  <li class="sub-menu">
-                      <a href="car_ride.php" >
-                          <i class="fa fa-car"></i>
-                          <span>Added ride</span>
-                      </a>
-                   
-                  </li>
-
-                   <li class="sub-menu">
-                      <a href="booked_ride.php" >
-                          <i class="fa fa-taxi"></i>
-                          <span>Booked ride</span>
-                      </a>
-                   
-                  </li>
-              
-                 
-              </ul>
-          </div>
-      </aside>
-      <section id="main-content">
-          <section class="wrapper">
-          	<h3><i class="fa fa-angle-right"></i> Booked ride</h3>
-				<div class="row">
-				
-                  
-	                  
-                  <div class="col-md-12">
-                      <div class="content-panel">
-                          <table class="table table-striped table-advance table-hover">
-	                  	  	  <h4><i class="fa fa-angle-right"></i> Booked Ride Details </h4>
-	                  	  	  <hr>
-                              <thead>
-                              <tr>
-                                  <th>Booking id</th>
-                                  <th class="hidden-phone">Ride Id</th>
-                                  <th>Booked By</th>
-                                  <th>Total person</th>
-                                  <th>Confirm status</th>
-                                  <th>Book time</th>
-                              </tr>
-                              </thead>
-                              <tbody>
-                              <?php $ret=mysqli_query($con,"SELECT * FROM `ride_book` ");
-		                          $cnt=1;
-              							  while($row=mysqli_fetch_array($ret))
-              							  {?>
-                              <tr>
-                                  <td><?php echo $row['b_id'];?></td>
-                                  <td><?php echo $row['ride_id'];?></td>
-                                  <td><?php echo user_name($row['book_by']);?><br>User ID : <?php echo $row['book_by'];?></td>
-                                  <td><?php echo $row['person'];?></td>
-                                  <td><?php echo $row['conform'];?></td>
-                                  <td><?php echo $row['booking_time'];?></td>                                 
-                                  <td>
-                                     
-                                     <a href="car_ride.php?id=<?php echo $row['b_id'];?>"> 
-                                     <button class="btn btn-danger btn-xs" onClick="return confirm('Do you really want to delete');"><i class="fa fa-trash-o "></i></button></a>
-                                  </td>
-                              </tr>
-                               <?php $cnt=$cnt+1; }?>
-                              </tbody>
-                          </table>
-                      </div>
-                  </div>
-              </div>
-		</section>
-      </section
-  ></section>
-    <script src="assets/js/jquery.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script class="include" type="text/javascript" src="assets/js/jquery.dcjqaccordion.2.7.js"></script>
-    <script src="assets/js/jquery.scrollTo.min.js"></script>
-    <script src="assets/js/jquery.nicescroll.js" type="text/javascript"></script>
-    <script src="assets/js/common-scripts.js"></script>
-  <script>
-      $(function(){
-          $('select.styled').customSelect();
-      });
-
-  </script>
-
-  </body>
+  <main class="ds-main">
+    <div class="ds-panel-wrap" style="border-radius:10px;">
+      <div class="ds-panel active">
+        <?php 
+        $ret = mysqli_query($con,"SELECT * FROM `ride_book` ORDER BY booking_time DESC");
+        if(mysqli_num_rows($ret) > 0) {
+            echo '<table class="table" style="background:white; border-radius:8px; overflow:hidden;">
+                    <thead style="background:#f9fafa;">
+                      <tr>
+                        <th style="padding:12px; text-align:left; border-bottom:2px solid #e0e4e2;">ID</th>
+                        <th style="padding:12px; text-align:left; border-bottom:2px solid #e0e4e2;">Ride ID</th>
+                        <th style="padding:12px; text-align:left; border-bottom:2px solid #e0e4e2;">Booked By (User ID)</th>
+                        <th style="padding:12px; text-align:left; border-bottom:2px solid #e0e4e2;">Seats</th>
+                        <th style="padding:12px; text-align:left; border-bottom:2px solid #e0e4e2;">Status</th>
+                        <th style="padding:12px; text-align:left; border-bottom:2px solid #e0e4e2;">Booking Time</th>
+                        <th style="padding:12px; text-align:right; border-bottom:2px solid #e0e4e2;">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>';
+            while($row = mysqli_fetch_array($ret)) {
+                $status_color = $row['conform'] == 'Yes' ? '#4A8A62' : '#F28D5B';
+                echo '<tr>
+                        <td style="padding:12px; border-bottom:1px solid #eee;">'.$row['b_id'].'</td>
+                        <td style="padding:12px; border-bottom:1px solid #eee;">'.$row['ride_id'].'</td>
+                        <td style="padding:12px; border-bottom:1px solid #eee; font-weight:600;">'.$row['book_by'].'</td>
+                        <td style="padding:12px; border-bottom:1px solid #eee;">'.$row['person'].'</td>
+                        <td style="padding:12px; border-bottom:1px solid #eee; color:'.$status_color.'; font-weight:600;">'.$row['conform'].'</td>
+                        <td style="padding:12px; border-bottom:1px solid #eee; font-size:13px; color:var(--muted);">'.date('M d, Y h:i A', strtotime($row['booking_time'])).'</td>
+                        <td style="padding:12px; border-bottom:1px solid #eee; text-align:right;">
+                           <a href="booked_ride.php?id='.$row['b_id'].'" onclick="return confirm(\'Delete this booking?\');" style="color:#d9534f; text-decoration:none;" title="Delete">
+                             <i class="material-icons">delete</i>
+                           </a>
+                        </td>
+                      </tr>';
+            }
+            echo '</tbody></table>';
+        } else {
+            echo '<div class="ds-empty"><i class="material-icons">event_busy</i><p>No bookings have been made yet.</p></div>';
+        }
+        ?>
+      </div>
+    </div>
+  </main>
+  <footer class="ds-footer"><p>&copy; <?php echo date('Y'); ?> CarShare Admin Panel</p></footer>
+</body>
 </html>
-<?php } ?>
