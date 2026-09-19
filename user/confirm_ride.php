@@ -8,6 +8,11 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="../assets/css/dashboard.css" rel="stylesheet">
+  
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+  
   <?php
   require '../config.php';
   session_start();
@@ -30,7 +35,6 @@
     <button class="ds-menu-toggle" onclick="document.querySelector('.ds-nav-links').classList.toggle('is-open')" aria-label="Toggle menu"><span></span><span></span><span></span></button>
     <ul class="ds-nav-links">
       <li><a href="profile-page.php"><i class="material-icons">home</i> Home</a></li>
-      <li><a href="edit.php"><i class="material-icons">edit</i> Edit</a></li>
       <li><a href="add_ride.php"><i class="material-icons">directions_car</i> Add Ride</a></li>
       <li><a href="confirmed.php"><i class="material-icons">check_circle</i> Confirmed</a></li>
       <li><a href="support.php"><i class="material-icons">support_agent</i> Support</a></li>
@@ -43,8 +47,12 @@
   </section>
   <main class="ds-main">
     <div class="ds-form-card">
-      <div class="ds-form-header"><i class="material-icons" style="vertical-align:middle;margin-right:8px;">directions_car</i> Ride Details</div>
+      <div class="ds-form-header"><i class="material-icons" style="vertical-align:middle;margin-right:8px;">map</i> Route Map & Details</div>
       <div class="ds-form-body">
+        
+        <!-- Interactive Map Container -->
+        <div id="route-map" style="height: 280px; width: 100%; border-radius: 8px; margin-bottom: 24px; z-index: 1; border: 1px solid #ddd;"></div>
+        
         <form method="post">
           <div class="ds-panel active">
             <div class="card" style="margin-bottom:24px;">
@@ -52,7 +60,7 @@
                 <table class="table">
                   <tr><td>Ride</td><td><?php echo $r_data['r_from'];?> &rarr; <?php echo $r_data['r_to'];?></td></tr>
                   <tr><td>Via</td><td><?php echo $r_data['r_via'];?></td></tr>
-                  <tr><td>Charge/Person</td><td style="font-weight:700;"><?php echo $r_data['ppc'];?></td></tr>
+                  <tr><td>Charge/Person</td><td style="font-weight:700;">₹<?php echo $r_data['ppc'];?></td></tr>
                   <tr><td>Ride Time</td><td><?php echo $r_data['start_time'];?> &rarr; <?php echo $r_data['end_time'];?></td></tr>
                   <tr><td>Ride Date</td><td><?php echo $r_data['date'];?></td></tr>
                 </table>
@@ -72,13 +80,64 @@
           </div>
           <div style="display:flex;gap:12px;">
             <button type="submit" name="save" class="ds-submit" style="flex:2;"><i class="material-icons" style="font-size:18px;">check_circle</i> Confirm Booking</button>
-            <a href="ride.php" class="ds-submit" style="flex:1;background:rgba(242,141,91,.12);color:var(--orange);text-decoration:none;">Cancel</a>
+            <a href="ride.php" class="ds-submit" style="flex:1;background:rgba(242,141,91,.12);color:var(--orange);text-decoration:none;text-align:center;">Cancel</a>
           </div>
         </form>
       </div>
     </div>
   </main>
   <footer class="ds-footer"><p>&copy; <?php echo date('Y'); ?> <a href="../index.php">CarShare</a></p></footer>
+
+  <!-- Leaflet Map JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+  <script>
+    const fromCity = "<?php echo addslashes($r_data['r_from']); ?>";
+    const toCity = "<?php echo addslashes($r_data['r_to']); ?>";
+    
+    // Initialize map centered roughly on India
+    const map = L.map('route-map').setView([22.0, 79.0], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Free OpenStreetMap Geocoder (Nominatim)
+    async function geocode(city) {
+        try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`);
+            const data = await response.json();
+            if (data && data.length > 0) {
+                return L.latLng(data[0].lat, data[0].lon);
+            }
+        } catch(e) { console.error("Geocoding failed for " + city); }
+        return null;
+    }
+
+    async function drawRoute() {
+        const start = await geocode(fromCity);
+        const end = await geocode(toCity);
+
+        if (start && end) {
+            L.Routing.control({
+                waypoints: [start, end],
+                routeWhileDragging: false,
+                addWaypoints: false,
+                fitSelectedRoutes: true,
+                show: false, // Hides the clunky turn-by-turn text box
+                lineOptions: {
+                    styles: [{color: '#1a73e8', opacity: 0.8, weight: 6}]
+                }
+            }).addTo(map);
+        } else {
+            document.getElementById('route-map').innerHTML = "<div style='display:flex;height:100%;align-items:center;justify-content:center;color:#666;'><p>Map route unavailable for these locations.</p></div>";
+        }
+    }
+
+    drawRoute();
+  </script>
+
+<?php include 'chatbot.php'; ?>
 </body>
 </html>
+
 

@@ -1,0 +1,6 @@
+[18-Sep-2026 09:00:12 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'rb.id' in 'field list' in C:\xampp\htdocs\carshare\user\api_chatbot.php:99
+Stack trace:
+#0 C:\xampp\htdocs\carshare\user\api_chatbot.php(99): mysqli_query(Object(mysqli), 'SELECT rb.id as...')
+#1 C:\xampp\htdocs\carshare\user\api_chatbot.php(187): handle_get_user_bookings(Object(mysqli), 1)
+#2 {main}
+  thrown in C:\xampp\htdocs\carshare\user\api_chatbot.php on line 99

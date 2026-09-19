@@ -42,7 +42,6 @@ if(isset($_POST['submit_ticket'])) {
     <button class="ds-menu-toggle" onclick="document.querySelector('.ds-nav-links').classList.toggle('is-open')" aria-label="Toggle menu"><span></span><span></span><span></span></button>
     <ul class="ds-nav-links">
       <li><a href="profile-page.php"><i class="material-icons">home</i> Home</a></li>
-      <li><a href="edit.php"><i class="material-icons">edit</i> Edit</a></li>
       <li><a href="add_ride.php"><i class="material-icons">directions_car</i> Add Ride</a></li>
       <li><a href="confirmed.php"><i class="material-icons">check_circle</i> Confirmed</a></li>
       <li><a class="active" href="support.php"><i class="material-icons">support_agent</i> Support</a></li>
@@ -108,6 +107,8 @@ if(isset($_POST['submit_ticket'])) {
   </main>
   
   <footer class="ds-footer"><p>&copy; <?php echo date('Y'); ?> <a href="../index.php">CarShare</a></p></footer>
+<?php include 'chatbot.php'; ?>
 </body>
 </html>
+
 

@@ -106,6 +106,8 @@
     <p>&copy; <?php echo date('Y'); ?> <a href="../index.php">CarShare</a>. Better rides, shared.</p>
   </footer>
 
+<?php include 'chatbot.php'; ?>
 </body>
 </html>
+
 

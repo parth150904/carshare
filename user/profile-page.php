@@ -41,7 +41,6 @@
     </button>
     <ul class="ds-nav-links">
       <li><a class="active" href="profile-page.php"><i class="material-icons">home</i> Home</a></li>
-      <li><a href="edit.php"><i class="material-icons">edit</i> Edit</a></li>
       <li><a href="add_ride.php"><i class="material-icons">directions_car</i> Add Ride</a></li>
       <li><a href="confirmed.php"><i class="material-icons">check_circle</i> Confirmed</a></li>
       <li><a href="support.php"><i class="material-icons">support_agent</i> Support</a></li>
@@ -90,7 +89,7 @@
     <div class="ds-panel-wrap">
       <div class="ds-panel active" id="panel-bookings">
         <a href="ride.php" class="ds-cta">
-          <i class="material-icons">search</i> Book a new ride
+          <i class="material-icons">search</i> Search for Rides
         </a>
         <div id="your_booking"></div>
       </div>
@@ -142,6 +141,8 @@
         $("#your_car").load('your_car.php');});
     }
   </script>
+<?php include 'chatbot.php'; ?>
 </body>
 </html>
+
 

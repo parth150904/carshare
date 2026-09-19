@@ -143,7 +143,9 @@
     </div>
   </main>
   <footer class="ds-footer"><p>&copy; <?php echo date('Y'); ?> <a href="../index.php">CarShare</a></p></footer>
+<?php include 'chatbot.php'; ?>
 </body>
 </html>
+
 
 
